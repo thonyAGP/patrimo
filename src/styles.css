@@ -396,8 +396,8 @@ h3 {
 
 .grille {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 16px 18px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px 14px;
 }
 
 .champ {
@@ -411,7 +411,7 @@ h3 {
 }
 
 .champ-label {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--texte-2);
 }
@@ -420,9 +420,9 @@ input,
 select,
 textarea {
   font: inherit;
-  font-size: 15px;
-  min-height: 46px;
-  padding: 10px 13px;
+  font-size: 14.5px;
+  min-height: 42px;
+  padding: 8px 12px;
   border: 1px solid var(--bordure);
   border-radius: var(--radius-input);
   background: var(--surface);
@@ -461,8 +461,8 @@ textarea::placeholder {
 }
 
 .bouton-statut {
-  min-height: 46px;
-  padding: 0 12px;
+  min-height: 42px;
+  padding: 0 10px;
   border: 1px solid var(--bordure);
   border-radius: var(--radius-input);
   background: var(--surface);
@@ -565,11 +565,16 @@ button {
    ============================================================ */
 
 .element {
-  border: 1px solid var(--bordure);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  padding: 16px 18px;
-  margin-bottom: 14px;
+  border: none;
+  border-bottom: 1px solid var(--surface-2);
+  border-radius: 0;
+  background: transparent;
+  padding: 14px 0;
+  margin-bottom: 0;
+}
+
+.element:last-of-type {
+  border-bottom: none;
 }
 
 .element-entete {
@@ -577,7 +582,7 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .element-entete .titre {
@@ -816,6 +821,326 @@ button {
 }
 
 /* ============================================================
+   Disposition dossier : contenu + colonne droite contextuelle
+   ============================================================ */
+
+.disposition {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
+  align-items: start;
+}
+
+.rail .carte {
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.rail .carte-titre {
+  font-size: 14px;
+  margin-bottom: 14px;
+  color: var(--texte-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--police-texte);
+  font-weight: 600;
+}
+
+.anneau-bloc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.anneau-bloc .fraction {
+  font-family: var(--police-titres);
+  font-size: 22px;
+  font-weight: 700;
+  fill: var(--petrole);
+}
+
+.anneau-bloc .legende-anneau {
+  font-size: 13px;
+  color: var(--texte-2);
+}
+
+.rail-lignes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13.5px;
+}
+
+.rail-lignes .ligne {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rail-lignes .pastille {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rail-lignes .valeur-droite {
+  margin-left: auto;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.carte-astuce {
+  background: var(--surface-2);
+  border: none;
+}
+
+.carte-astuce .illustration {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.carte-astuce .etiquette-astuce {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--terracotta);
+  margin-bottom: 6px;
+}
+
+.carte-astuce p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--texte);
+}
+
+.carte-francois {
+  text-align: center;
+}
+
+.carte-francois .avatar-grand {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 10px;
+  background: var(--petrole-clair);
+}
+
+.carte-francois .nom {
+  font-family: var(--police-titres);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.carte-francois .role {
+  font-size: 13px;
+  color: var(--texte-2);
+  margin-bottom: 10px;
+}
+
+.carte-francois p {
+  font-size: 13.5px;
+  color: var(--texte-2);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+/* ============================================================
+   Groupes, rangées denses & boutons doux
+   ============================================================ */
+
+.titre-groupe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--police-titres);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sauge-fonce);
+  margin: 22px 0 4px;
+}
+
+.titre-groupe:first-child {
+  margin-top: 0;
+}
+
+.titre-groupe.terracotta {
+  color: var(--terracotta);
+}
+
+.titre-groupe.petrole {
+  color: var(--petrole);
+}
+
+.bouton-doux {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--radius-input);
+  background: var(--terracotta-clair);
+  color: #a94f24;
+  font-weight: 600;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.bouton-doux:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ombre-card);
+}
+
+.bouton-doux.petrole {
+  background: var(--petrole-clair);
+  color: var(--petrole);
+}
+
+.lien-retirer {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 13.5px;
+  font-weight: 500;
+  min-height: 42px;
+  padding: 0 8px;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.lien-retirer:hover {
+  text-decoration: underline;
+}
+
+.ligne-repliee {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-top: 18px;
+  background: var(--surface-2);
+  border: none;
+  border-radius: var(--radius-input);
+  text-align: left;
+  transition: background 150ms ease;
+}
+
+.ligne-repliee:hover {
+  background: var(--petrole-clair);
+}
+
+.ligne-repliee .picto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--petrole);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ligne-repliee .textes {
+  flex: 1;
+}
+
+.ligne-repliee .principal {
+  font-weight: 600;
+}
+
+.ligne-repliee .secondaire {
+  font-size: 13px;
+  color: var(--texte-2);
+}
+
+.icone-objectif {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--terracotta-clair);
+  flex-shrink: 0;
+}
+
+.rangee-objectif {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.rangee-objectif .champs {
+  flex: 1;
+  min-width: 0;
+}
+
+.pied-contenu {
+  font-size: 13px;
+  color: var(--texte-2);
+  padding: 14px 4px 0;
+}
+
+/* KPI : icône en pastille + mini-courbe décorative */
+
+.tuile {
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+}
+
+.tuile .picto-tuile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-input);
+  background: var(--petrole-clair);
+  color: var(--petrole);
+  margin-bottom: 10px;
+}
+
+.tuile.terracotta .picto-tuile {
+  background: var(--terracotta-clair);
+  color: #a94f24;
+}
+
+.tuile.sauge .picto-tuile {
+  background: var(--sauge-clair);
+  color: var(--sauge-fonce);
+}
+
+.tuile .valeur {
+  color: var(--petrole);
+}
+
+.tuile.terracotta .valeur {
+  color: var(--terracotta);
+}
+
+.tuile.sauge .valeur {
+  color: var(--sauge-fonce);
+}
+
+.tuile .courbe {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ============================================================
    Navigation mobile / portrait
    ============================================================ */
 
@@ -904,6 +1229,11 @@ button {
 
   .header {
     padding: 0 20px;
+  }
+
+  /* La colonne droite passe sous le contenu */
+  .disposition {
+    grid-template-columns: 1fr;
   }
 
   .conseiller .infos {

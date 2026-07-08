@@ -1,4 +1,5 @@
-import { MessageSquareText, Wallet } from 'lucide-react'
+import { Euro, MessageSquareText, PiggyBank, Wallet } from 'lucide-react'
+import { MiniCourbe } from '../composants/Illustrations'
 import type { PropsSection } from '../pages/PageDossier'
 import type { Budget } from '../domaine/types'
 import { ChampMontant, ChampZone, formaterEuros } from '../composants/champs'
@@ -20,16 +21,28 @@ export function SectionBudget({ dossier, patch }: PropsSection) {
 
       <div className="tuiles">
         <div className="tuile">
+          <span className="picto-tuile">
+            <Euro size={18} />
+          </span>
           <div className="valeur">{formaterEuros(revenus || null)}</div>
           <div className="libelle">Revenus mensuels (section Situation pro)</div>
+          <MiniCourbe couleur="#174c56" />
         </div>
         <div className="tuile terracotta">
+          <span className="picto-tuile">
+            <Wallet size={18} />
+          </span>
           <div className="valeur">{formaterEuros(b.chargesMensuelles.valeur)}</div>
           <div className="libelle">Charges mensuelles</div>
+          <MiniCourbe couleur="#d66a3a" />
         </div>
         <div className="tuile sauge">
+          <span className="picto-tuile">
+            <PiggyBank size={18} />
+          </span>
           <div className="valeur">{formaterEuros(b.capaciteEpargneMensuelle.valeur)}</div>
           <div className="libelle">Capacité d'épargne envisagée</div>
+          <MiniCourbe couleur="#87a58d" />
         </div>
       </div>
 

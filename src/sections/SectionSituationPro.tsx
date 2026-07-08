@@ -1,4 +1,4 @@
-import { Briefcase, Euro, MessageSquareText } from 'lucide-react'
+import { Briefcase, Euro } from 'lucide-react'
 import type { PropsSection } from '../pages/PageDossier'
 import type { SituationPro } from '../domaine/types'
 import { ChampMontant, ChampSelect, ChampTexte, ChampZone } from '../composants/champs'
@@ -15,7 +15,11 @@ export function SectionSituationPro({ dossier, patch }: PropsSection) {
         sousTitre="Activité, revenus et situation professionnelle du foyer."
       />
 
-      <Carte titre="Activité principale" icone={<Briefcase size={18} />}>
+      <Carte>
+        <div className="titre-groupe petrole">
+          <Briefcase size={16} />
+          Activité principale
+        </div>
         <div className="grille">
           <ChampTexte
             label="Profession"
@@ -41,9 +45,11 @@ export function SectionSituationPro({ dossier, patch }: PropsSection) {
             onChange={(v) => maj({ employeur: v })}
           />
         </div>
-      </Carte>
 
-      <Carte titre="Revenus du foyer" icone={<Euro size={18} />}>
+        <div className="titre-groupe" style={{ marginTop: 24 }}>
+          <Euro size={16} />
+          Revenus du foyer
+        </div>
         <div className="grille">
           <ChampMontant
             label="Revenu net mensuel"
@@ -73,12 +79,10 @@ export function SectionSituationPro({ dossier, patch }: PropsSection) {
             onChange={(v) => maj({ tmi: v as SituationPro['tmi'] })}
           />
         </div>
-      </Carte>
 
-      <Carte titre="Commentaire" icone={<MessageSquareText size={18} />}>
-        <div className="grille">
+        <div className="grille" style={{ marginTop: 20 }}>
           <ChampZone
-            label="Précisions utiles"
+            label="Commentaire"
             valeur={sp.commentaire}
             onChange={(v) => maj({ commentaire: v })}
           />

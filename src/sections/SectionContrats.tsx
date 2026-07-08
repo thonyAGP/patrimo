@@ -1,4 +1,4 @@
-import { FileText, Trash2 } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import type { PropsSection } from '../pages/PageDossier'
 import {
   LIBELLES_CONTRAT,
@@ -6,7 +6,7 @@ import {
   type Contrat,
   type TypeContrat
 } from '../domaine/types'
-import { ChampMontant, ChampSelect, ChampTexte, formaterEuros } from '../composants/champs'
+import { ChampMontant, ChampSelect, ChampTexte } from '../composants/champs'
 import { Carte, TitrePage } from '../composants/Coquille'
 
 export function SectionContrats({ dossier, patch }: PropsSection) {
@@ -36,33 +36,18 @@ export function SectionContrats({ dossier, patch }: PropsSection) {
         sousTitre="Assurance-vie, prévoyance, retraite et autres contrats déjà en place."
       />
 
-      <Carte titre="Contrats du foyer" icone={<FileText size={18} />}>
+      <Carte>
+        <div className="titre-groupe petrole">
+          <FileText size={16} />
+          Contrats du foyer
+        </div>
         {dossier.contrats.length === 0 && (
-          <p style={{ color: 'var(--texte-2)', marginTop: 0 }}>
+          <p style={{ color: 'var(--texte-2)', margin: '8px 0' }}>
             Aucun contrat renseigné pour le moment.
           </p>
         )}
         {dossier.contrats.map((contrat) => (
           <div className="element" key={contrat.id}>
-            <div className="element-entete">
-              <span className="titre">
-                <FileText size={17} />
-                {contrat.libelle || LIBELLES_CONTRAT[contrat.type]}
-                {contrat.compagnie ? ` — ${contrat.compagnie}` : ''}
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span className="badge neutre">{formaterEuros(contrat.encours.valeur)}</span>
-                <button
-                  className="bouton-icone"
-                  aria-label="Retirer ce contrat"
-                  onClick={() =>
-                    patch({ contrats: dossier.contrats.filter((c) => c.id !== contrat.id) })
-                  }
-                >
-                  <Trash2 size={17} />
-                </button>
-              </span>
-            </div>
             <div className="grille">
               <ChampSelect
                 label="Type"
@@ -106,10 +91,21 @@ export function SectionContrats({ dossier, patch }: PropsSection) {
                 valeur={contrat.remarque}
                 onChange={(v) => maj(contrat.id, { remarque: v })}
               />
+              <div className="champ">
+                <span className="champ-label">&nbsp;</span>
+                <button
+                  className="lien-retirer"
+                  onClick={() =>
+                    patch({ contrats: dossier.contrats.filter((c) => c.id !== contrat.id) })
+                  }
+                >
+                  Retirer
+                </button>
+              </div>
             </div>
           </div>
         ))}
-        <button className="bouton terracotta ligne-ajout" onClick={ajouter}>
+        <button className="bouton-doux ligne-ajout" onClick={ajouter}>
           + Ajouter un contrat
         </button>
       </Carte>
