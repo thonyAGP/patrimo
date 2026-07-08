@@ -196,6 +196,46 @@ export interface NoteRdv {
   texte: string
 }
 
+// Photo de document jointe au dossier (stockée dans sa propre table pour ne
+// pas alourdir le document dossier ni son journal d'opérations).
+export type CategorieDocument =
+  | 'avis_imposition'
+  | 'releve_compte'
+  | 'contrat'
+  | 'tableau_amortissement'
+  | 'identite'
+  | 'autre'
+
+export const LIBELLES_CATEGORIE_DOCUMENT: Record<CategorieDocument, string> = {
+  avis_imposition: "Avis d'imposition",
+  releve_compte: 'Relevé de compte / contrat',
+  contrat: 'Contrat',
+  tableau_amortissement: "Tableau d'amortissement",
+  identite: "Pièce d'identité",
+  autre: 'Autre'
+}
+
+export interface DocumentPhoto {
+  id: string
+  dossierId: string
+  libelle: string
+  categorie: CategorieDocument
+  mime: string
+  donnees: Blob
+  creeLe: string
+}
+
+// Consentement RGPD signé sur la tablette pendant le rendez-vous.
+export interface Consentement {
+  texte: string
+  signePar: string
+  signature: string // data URL PNG du tracé
+  horodatage: string
+}
+
+export const TEXTE_CONSENTEMENT =
+  'Je consens à la collecte et au traitement de mes données personnelles, familiales et patrimoniales par mon conseiller, aux seules fins d’analyse de ma situation et de conseil en assurance, conformément au RGPD. Je peux exercer à tout moment mes droits d’accès, de rectification et de suppression de ces données auprès de mon conseiller.'
+
 export interface Dossier {
   id: string
   statutPipeline: StatutPipeline
@@ -207,6 +247,9 @@ export interface Dossier {
   budget: Budget
   objectifs: Objectif[]
   notes: NoteRdv[]
+  // Champs optionnels (ajoutés en Phase 2) : absents des dossiers créés avant.
+  relance?: string // date ISO de la prochaine relance
+  consentement?: Consentement | null
   creeLe: string
   modifieLe: string
 }
@@ -253,6 +296,8 @@ export function nouveauDossier(): Dossier {
     },
     objectifs: [],
     notes: [],
+    relance: '',
+    consentement: null,
     creeLe: maintenant,
     modifieLe: maintenant
   }

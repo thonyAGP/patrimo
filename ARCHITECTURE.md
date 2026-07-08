@@ -153,10 +153,10 @@ Données patrimoniales et financières = fort niveau d'exigence :
 - Liste des dossiers, recherche simple, notes de RDV.
 
 ### Phase 2 — Exploitation
-- Synthèse patrimoniale PDF, liste des pièces manquantes.
-- Photos de documents jointes au dossier.
-- Consentement RGPD avec signature tactile.
-- Pipeline/statuts et rappels de relance.
+- Synthèse patrimoniale PDF, liste des pièces manquantes. *(liste des pièces : fait)*
+- Photos de documents jointes au dossier. *(fait : compression automatique, stockage local)*
+- Consentement RGPD avec signature tactile. *(fait)*
+- Pipeline/statuts et rappels de relance. *(fait : date de relance + badge d'échéance)*
 
 ### Phase 3 — Confort et croissance
 - Questionnaire paramétrable (l'agent édite sa trame lui-même).

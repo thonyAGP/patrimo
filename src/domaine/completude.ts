@@ -10,7 +10,10 @@ export interface EtapeCompletude {
   complete: boolean
 }
 
-export function completude(d: Dossier): { etapes: EtapeCompletude[]; pourcentage: number } {
+export function completude(
+  d: Dossier,
+  nbDocuments = 0
+): { etapes: EtapeCompletude[]; pourcentage: number } {
   const ec = d.etatCivil
   const sp = d.situationPro
 
@@ -39,7 +42,8 @@ export function completude(d: Dossier): { etapes: EtapeCompletude[]; pourcentage
       cle: 'notes',
       libelle: 'Notes RDV',
       complete: d.notes.some((n) => n.texte.trim().length > 0)
-    }
+    },
+    { cle: 'documents', libelle: 'Documents', complete: nbDocuments > 0 }
   ]
 
   const faites = etapes.filter((e) => e.complete).length

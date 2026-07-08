@@ -8,49 +8,22 @@ import {
   Users,
   Wallet
 } from 'lucide-react'
+import { useLiveQuery } from 'dexie-react-hooks'
 import type { PropsSection } from '../pages/PageDossier'
 import {
-  LIBELLES_ACTIF,
-  LIBELLES_CONTRAT,
   LIBELLES_OBJECTIF,
   LIBELLES_PIPELINE,
-  type Dossier,
   type Montant
 } from '../domaine/types'
+import { db } from '../db/db'
 import { completude } from '../domaine/completude'
+import { piecesAObtenir } from '../domaine/pieces'
 import { formaterEuros } from '../composants/champs'
 import { Carte, TitrePage } from '../composants/Coquille'
 import { MiniCourbe } from '../composants/Illustrations'
 
 const somme = (montants: Montant[]) =>
   montants.reduce((total, m) => total + (m.valeur ?? 0), 0)
-
-// Toute donnée marquée « à obtenir » devient une pièce à demander au prospect.
-function piecesAObtenir(dossier: Dossier): string[] {
-  const pieces: string[] = []
-  const verifier = (m: Montant, libelle: string) => {
-    if (m.statut === 'a_obtenir') pieces.push(libelle)
-  }
-
-  verifier(dossier.situationPro.revenuNetMensuel, 'Revenu net mensuel (bulletin de salaire / avis d’imposition)')
-  verifier(dossier.situationPro.revenuConjointMensuel, 'Revenu du conjoint')
-  verifier(dossier.situationPro.autresRevenusMensuels, 'Justificatif des autres revenus')
-  verifier(dossier.budget.chargesMensuelles, 'Détail des charges mensuelles')
-  verifier(dossier.budget.epargneMensuelleActuelle, 'Relevés d’épargne mensuelle')
-  dossier.actifs.forEach((a) =>
-    verifier(a.valeur, `Valeur de : ${a.libelle || LIBELLES_ACTIF[a.type]}`)
-  )
-  dossier.passifs.forEach((p) => {
-    verifier(p.capitalRestantDu, `Tableau d’amortissement : ${p.libelle || 'crédit'}`)
-    verifier(p.mensualite, `Mensualité : ${p.libelle || 'crédit'}`)
-  })
-  dossier.contrats.forEach((c) => {
-    const nom = c.libelle || LIBELLES_CONTRAT[c.type]
-    verifier(c.encours, `Relevé de situation : ${nom}`)
-    verifier(c.cotisationMensuelle, `Cotisation : ${nom}`)
-  })
-  return pieces
-}
 
 // Formulations « conseil » des sections encore incomplètes.
 const RECOMMANDATIONS: Record<string, string> = {
@@ -60,7 +33,8 @@ const RECOMMANDATIONS: Record<string, string> = {
   contrats: 'Compléter les informations sur les contrats — assurance-vie, PER, prévoyance…',
   budget: 'Évaluer la capacité d’épargne mensuelle pour affiner les simulations.',
   objectifs: 'Définir et hiérarchiser les objectifs patrimoniaux.',
-  notes: 'Consigner les points clés du rendez-vous et les prochaines actions.'
+  notes: 'Consigner les points clés du rendez-vous et les prochaines actions.',
+  documents: 'Photographier les pièces justificatives remises par le prospect.'
 }
 
 const LIBELLES_HORIZON: Record<string, string> = {
@@ -147,9 +121,15 @@ export function SectionSynthese({ dossier }: PropsSection) {
     { libelle: 'Encours contrats', valeur: totalContrats }
   ]
 
+  const nbDocuments =
+    useLiveQuery(
+      () => db.documents.where('dossierId').equals(dossier.id).count(),
+      [dossier.id]
+    ) ?? 0
+
   const pieces = piecesAObtenir(dossier)
   const objectifsPrioritaires = [...dossier.objectifs].sort((a, b) => a.priorite - b.priorite)
-  const { etapes } = completude(dossier)
+  const { etapes } = completude(dossier, nbDocuments)
   const incompletes = etapes.filter((e) => !e.complete)
 
   const ec = dossier.etatCivil

@@ -1,14 +1,39 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Users } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronRight, ShieldCheck, Users } from 'lucide-react'
 import type { PropsSection } from '../pages/PageDossier'
-import type { EtatCivil } from '../domaine/types'
+import { TEXTE_CONSENTEMENT, type EtatCivil } from '../domaine/types'
 import { ChampNombre, ChampSelect, ChampTexte } from '../composants/champs'
 import { Carte, TitrePage } from '../composants/Coquille'
+import { PadSignature } from '../composants/PadSignature'
 
 export function SectionEtatCivil({ dossier, patch }: PropsSection) {
   const ec = dossier.etatCivil
   const maj = (p: Partial<EtatCivil>) => patch({ etatCivil: { ...ec, ...p } })
-  const [enfantsOuverts, setEnfantsOuverts] = useState(ec.enfants.length === 0 ? false : false)
+  const [enfantsOuverts, setEnfantsOuverts] = useState(false)
+  const [signature, setSignature] = useState<string | null>(null)
+  const [signePar, setSignePar] = useState('')
+
+  const consentement = dossier.consentement ?? null
+
+  function enregistrerConsentement() {
+    if (!signature) return
+    patch({
+      consentement: {
+        texte: TEXTE_CONSENTEMENT,
+        signePar: signePar || `${ec.prenom} ${ec.nom}`.trim(),
+        signature,
+        horodatage: new Date().toISOString()
+      }
+    })
+    setSignature(null)
+    setSignePar('')
+  }
+
+  function retirerConsentement() {
+    if (window.confirm('Retirer le consentement enregistré ?')) {
+      patch({ consentement: null })
+    }
+  }
 
   function ajouterEnfant() {
     setEnfantsOuverts(true)
@@ -183,6 +208,67 @@ export function SectionEtatCivil({ dossier, patch }: PropsSection) {
             ))}
             <button className="bouton-doux ligne-ajout" onClick={ajouterEnfant}>
               + Ajouter un enfant
+            </button>
+          </div>
+        )}
+      </Carte>
+
+      <Carte titre="Consentement RGPD" icone={<ShieldCheck size={18} />}>
+        {consentement ? (
+          <div>
+            <p
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                color: 'var(--sauge-fonce)',
+                fontWeight: 600,
+                margin: '0 0 10px'
+              }}
+            >
+              <CheckCircle2 size={18} />
+              Consentement signé par {consentement.signePar || '—'} le{' '}
+              {new Date(consentement.horodatage).toLocaleDateString('fr-FR')} à{' '}
+              {new Date(consentement.horodatage).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </p>
+            <p style={{ fontSize: 13.5, color: 'var(--texte-2)', lineHeight: 1.55 }}>
+              {consentement.texte}
+            </p>
+            <img
+              src={consentement.signature}
+              alt={`Signature de ${consentement.signePar}`}
+              className="signature-apercu"
+            />
+            <div>
+              <button className="lien-retirer" onClick={retirerConsentement}>
+                Retirer le consentement
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p style={{ fontSize: 14, color: 'var(--texte-2)', lineHeight: 1.55, marginTop: 0 }}>
+              {TEXTE_CONSENTEMENT}
+            </p>
+            <div className="grille" style={{ marginBottom: 14 }}>
+              <ChampTexte
+                label="Nom du signataire"
+                valeur={signePar || `${ec.prenom} ${ec.nom}`.trim()}
+                onChange={setSignePar}
+              />
+            </div>
+            <PadSignature onChange={setSignature} />
+            <button
+              className="bouton ligne-ajout"
+              onClick={enregistrerConsentement}
+              disabled={!signature}
+              style={{ marginTop: 12, opacity: signature ? 1 : 0.5 }}
+            >
+              <ShieldCheck size={17} />
+              Enregistrer le consentement
             </button>
           </div>
         )}

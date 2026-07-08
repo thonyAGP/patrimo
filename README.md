@@ -24,10 +24,20 @@ npm run preview    # sert le build localement
 - **Offline-first** : toutes les données sont écrites dans IndexedDB (Dexie) avec sauvegarde automatique — aucun réseau nécessaire en rendez-vous. L'application est une PWA installable sur l'écran d'accueil de la tablette.
 - **Journal d'opérations** : chaque écriture est tracée localement, prête à être rejouée vers un backend (Supabase, région UE) — voir `src/sync/sync.ts`.
 
+## Phase 2 (partielle) — déjà disponible
+
+- **Documents** : photos des pièces du prospect (appareil photo ou galerie),
+  compression automatique (~1600 px JPEG), vignettes, visionneuse plein écran,
+  stockage local dans sa propre table.
+- **Consentement RGPD** : texte de consentement, signature tactile sur canvas,
+  horodatage — dans la section État civil.
+- **Relances** : date de prochaine relance sur chaque dossier, badge
+  « Relance due » sur la liste quand l'échéance est atteinte.
+
 ## Prochaines étapes (voir ARCHITECTURE.md)
 
 - Phase 1.5 : synchronisation serveur (Supabase) + authentification.
-- Phase 2 : synthèse PDF, photos de documents, consentement RGPD signé, relances.
+- Phase 2 (reste) : synthèse patrimoniale PDF.
 - Phase 3 : trame de questionnaire paramétrable, profil investisseur, multi-utilisateurs.
 
 ## Structure du code

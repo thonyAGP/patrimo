@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useLiveQuery } from 'dexie-react-hooks'
 import {
   Briefcase,
   CalendarCheck,
+  CircleAlert,
   FileText,
   Heart,
   Landmark,
   NotebookPen,
+  Paperclip,
   PieChart,
   Target,
   Trash2,
@@ -21,6 +24,7 @@ import {
   type StatutPipeline
 } from '../domaine/types'
 import { completude } from '../domaine/completude'
+import { piecesAObtenir } from '../domaine/pieces'
 import { Coquille, Carte } from '../composants/Coquille'
 import { AvatarFrancois } from '../composants/Conseiller'
 import {
@@ -37,6 +41,7 @@ import { SectionContrats } from '../sections/SectionContrats'
 import { SectionBudget } from '../sections/SectionBudget'
 import { SectionObjectifs } from '../sections/SectionObjectifs'
 import { SectionNotes } from '../sections/SectionNotes'
+import { SectionDocuments } from '../sections/SectionDocuments'
 import { SectionSynthese } from '../sections/SectionSynthese'
 
 export interface PropsSection {
@@ -57,6 +62,7 @@ const SECTIONS: {
   { cle: 'budget', libelle: 'Budget', Icone: Wallet, Composant: SectionBudget },
   { cle: 'objectifs', libelle: 'Objectifs', Icone: Target, Composant: SectionObjectifs },
   { cle: 'notes', libelle: 'Notes RDV', Icone: NotebookPen, Composant: SectionNotes },
+  { cle: 'documents', libelle: 'Documents', Icone: Paperclip, Composant: SectionDocuments },
   { cle: 'synthese', libelle: 'Synthèse', Icone: PieChart, Composant: SectionSynthese }
 ]
 
@@ -94,7 +100,12 @@ function RailDossier({
   section: string
   allerA: (cle: string) => void
 }) {
-  const { etapes } = completude(dossier)
+  const nbDocuments =
+    useLiveQuery(
+      () => db.documents.where('dossierId').equals(dossier.id).count(),
+      [dossier.id]
+    ) ?? 0
+  const { etapes } = completude(dossier, nbDocuments)
   const faites = etapes.filter((e) => e.complete).length
   const ec = dossier.etatCivil
 
@@ -225,6 +236,34 @@ function RailDossier({
           illustration={<IllustrationPlante />}
           texte="Notez les prochaines actions convenues : elles structureront le second rendez-vous."
         />
+      )}
+
+      {section === 'documents' && (
+        <>
+          <Carte titre="Pièces à obtenir">
+            {piecesAObtenir(dossier).length === 0 ? (
+              <div className="rail-lignes">
+                <div className="ligne">
+                  <span className="pastille" style={{ background: 'var(--sauge)' }} />
+                  Aucune pièce en attente.
+                </div>
+              </div>
+            ) : (
+              <div className="rail-lignes">
+                {piecesAObtenir(dossier).map((p) => (
+                  <div className="ligne" key={p}>
+                    <CircleAlert size={15} style={{ color: 'var(--terracotta)', flexShrink: 0 }} />
+                    {p}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Carte>
+          <Astuce
+            illustration={<IllustrationMaison />}
+            texte="Quand une pièce arrive, photographiez-la : le dossier reste complet sans re-saisie."
+          />
+        </>
       )}
 
       {section === 'synthese' && (
@@ -362,6 +401,16 @@ export function PageDossier() {
                 </option>
               ))}
             </select>
+          </label>
+        </div>
+        <div style={{ minWidth: 190 }}>
+          <label className="champ">
+            <span className="champ-label">Prochaine relance</span>
+            <input
+              type="date"
+              value={dossier.relance ?? ''}
+              onChange={(e) => patch({ relance: e.target.value })}
+            />
           </label>
         </div>
         <button

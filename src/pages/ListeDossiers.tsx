@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { FolderOpen, Plus, Target } from 'lucide-react'
+import { BellRing, FolderOpen, Plus, Target } from 'lucide-react'
 import { db, sauverDossier } from '../db/db'
 import { LIBELLES_PIPELINE, nouveauDossier, type StatutPipeline } from '../domaine/types'
 import { Coquille, TitrePage } from '../composants/Coquille'
@@ -96,6 +96,25 @@ export function ListeDossiers() {
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                     <Target size={14} />
                     {d.objectifs.length} objectif{d.objectifs.length > 1 ? 's' : ''}
+                  </span>
+                )}
+                {d.relance && (
+                  <span
+                    className={`badge ${
+                      d.relance <= new Date().toISOString().slice(0, 10)
+                        ? 'danger'
+                        : 'terracotta'
+                    }`}
+                  >
+                    <BellRing size={13} />
+                    {d.relance <= new Date().toISOString().slice(0, 10)
+                      ? 'Relance due'
+                      : 'Relance'}{' '}
+                    le{' '}
+                    {new Date(d.relance + 'T00:00:00').toLocaleDateString('fr-FR', {
+                      day: 'numeric',
+                      month: 'short'
+                    })}
                   </span>
                 )}
               </span>
