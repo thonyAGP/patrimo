@@ -1,0 +1,338 @@
+:root {
+  --bleu-nuit: #1d3557;
+  --bleu: #457b9d;
+  --orange: #f4a261;
+  --fond: #f4f6f9;
+  --carte: #ffffff;
+  --texte: #1f2933;
+  --texte-doux: #5f6b7a;
+  --bordure: #d4dbe4;
+  --vert: #2a9d8f;
+  --rouge: #e63946;
+  --rayon: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Coquille de l'application ---------- */
+
+.entete {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: var(--bleu-nuit);
+  color: #fff;
+}
+
+.entete h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.entete a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.entete .espace {
+  flex: 1;
+}
+
+.pastille-sync {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.pastille-sync.hors_ligne { background: var(--orange); color: var(--bleu-nuit); }
+.pastille-sync.en_attente { background: var(--orange); color: var(--bleu-nuit); }
+
+.contenu {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+/* ---------- Boutons ---------- */
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.bouton {
+  min-height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--rayon);
+  background: var(--bleu);
+  color: #fff;
+  font-weight: 600;
+}
+
+.bouton.primaire { background: var(--bleu-nuit); }
+.bouton.danger { background: transparent; color: var(--rouge); border: 1px solid var(--rouge); }
+.bouton.discret { background: transparent; color: var(--bleu); border: 1px solid var(--bordure); }
+
+/* ---------- Liste des dossiers ---------- */
+
+.barre-outils {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.barre-outils input[type='search'] {
+  flex: 1;
+  min-width: 220px;
+}
+
+.carte-dossier {
+  display: block;
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.carte-dossier:active {
+  background: #eef2f7;
+}
+
+.carte-dossier .nom {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.carte-dossier .meta {
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #e3e9f1;
+  color: var(--bleu-nuit);
+}
+
+.badge.client { background: #d7efe9; color: var(--vert); }
+.badge.sans_suite { background: #f8dcdc; color: var(--rouge); }
+
+.vide {
+  text-align: center;
+  color: var(--texte-doux);
+  padding: 60px 20px;
+}
+
+/* ---------- Dossier : navigation par sections ---------- */
+
+.onglets {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 0;
+  margin-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.onglets button {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--bordure);
+  background: var(--carte);
+  color: var(--texte);
+  font-weight: 600;
+}
+
+.onglets button.actif {
+  background: var(--bleu-nuit);
+  border-color: var(--bleu-nuit);
+  color: #fff;
+}
+
+.section {
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 20px;
+}
+
+.section h2 {
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  color: var(--bleu-nuit);
+}
+
+.section h3 {
+  margin: 24px 0 12px;
+  font-size: 1rem;
+  color: var(--bleu);
+}
+
+/* ---------- Champs ---------- */
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.champ-large {
+  grid-column: 1 / -1;
+}
+
+.champ-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texte-doux);
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  background: #fff;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--bleu);
+  outline-offset: 1px;
+}
+
+.champ-montant {
+  display: flex;
+  gap: 8px;
+}
+
+.champ-montant input {
+  flex: 1;
+}
+
+.bouton-statut {
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: var(--rayon);
+  border: 1px solid var(--bordure);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statut-confirme { color: var(--vert); border-color: var(--vert); }
+.statut-estime { color: var(--orange); border-color: var(--orange); }
+.statut-a-obtenir { color: var(--rouge); border-color: var(--rouge); }
+
+/* ---------- Listes d'éléments (actifs, contrats…) ---------- */
+
+.element {
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.element-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.element-entete .titre {
+  font-weight: 700;
+}
+
+.ligne-ajout {
+  margin-top: 8px;
+}
+
+/* ---------- Synthèse ---------- */
+
+.tuiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.tuile {
+  background: var(--carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 16px 20px;
+}
+
+.tuile .valeur {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bleu-nuit);
+}
+
+.tuile .libelle {
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+}
+
+.liste-pieces li {
+  margin-bottom: 6px;
+}
+
+.indicateur-sauvegarde {
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+  text-align: right;
+  padding: 8px 4px 0;
+}
