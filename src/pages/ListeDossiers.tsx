@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { FolderOpen, Plus, Target } from 'lucide-react'
 import { db, sauverDossier } from '../db/db'
-import { LIBELLES_PIPELINE, nouveauDossier } from '../domaine/types'
+import { LIBELLES_PIPELINE, nouveauDossier, type StatutPipeline } from '../domaine/types'
+import { Coquille, TitrePage } from '../composants/Coquille'
+
+const CLASSE_BADGE: Partial<Record<StatutPipeline, string>> = {
+  client: 'sauge',
+  sans_suite: 'danger',
+  proposition: 'terracotta'
+}
 
 export function ListeDossiers() {
   const [recherche, setRecherche] = useState('')
@@ -24,17 +32,33 @@ export function ListeDossiers() {
     navigate(`/dossier/${dossier.id}`)
   }
 
+  const sidebar = (
+    <nav className="nav-sections">
+      <Link to="/" className="actif">
+        <FolderOpen size={20} />
+        <span className="libelle-nav">Dossiers</span>
+      </Link>
+    </nav>
+  )
+
   return (
-    <>
+    <Coquille sidebar={sidebar} breadcrumb={<strong>Dossiers</strong>}>
+      <TitrePage
+        titre="Dossiers"
+        sousTitre="Retrouvez vos prospects et clients, ou ouvrez un nouveau dossier de découverte."
+      />
+
       <div className="barre-outils">
         <input
           type="search"
           placeholder="Rechercher un prospect…"
+          aria-label="Rechercher un prospect"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
         />
-        <button className="bouton primaire" onClick={creerDossier}>
-          + Nouveau dossier
+        <button className="bouton" onClick={creerDossier}>
+          <Plus size={18} />
+          Nouveau dossier
         </button>
       </div>
 
@@ -49,30 +73,36 @@ export function ListeDossiers() {
       {filtres.map((d) => {
         const nom =
           `${d.etatCivil.prenom} ${d.etatCivil.nom}`.trim() || 'Dossier sans nom'
+        const initiales =
+          `${d.etatCivil.prenom.charAt(0)}${d.etatCivil.nom.charAt(0)}`.toUpperCase() || '·'
         return (
           <Link key={d.id} to={`/dossier/${d.id}`} className="carte-dossier">
-            <div className="nom">{nom}</div>
-            <div className="meta">
-              <span className={`badge ${d.statutPipeline}`}>
-                {LIBELLES_PIPELINE[d.statutPipeline]}
-              </span>
-              <span>
-                Modifié le{' '}
-                {new Date(d.modifieLe).toLocaleDateString('fr-FR', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric'
-                })}
-              </span>
-              {d.objectifs.length > 0 && (
-                <span>
-                  {d.objectifs.length} objectif{d.objectifs.length > 1 ? 's' : ''}
+            <span className="initiales">{initiales}</span>
+            <span className="corps">
+              <span className="nom">{nom}</span>
+              <span className="meta">
+                <span className={`badge ${CLASSE_BADGE[d.statutPipeline] ?? ''}`}>
+                  {LIBELLES_PIPELINE[d.statutPipeline]}
                 </span>
-              )}
-            </div>
+                <span>
+                  Modifié le{' '}
+                  {new Date(d.modifieLe).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                  })}
+                </span>
+                {d.objectifs.length > 0 && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Target size={14} />
+                    {d.objectifs.length} objectif{d.objectifs.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </span>
+            </span>
           </Link>
         )
       })}
-    </>
+    </Coquille>
   )
 }
